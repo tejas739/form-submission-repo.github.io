@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Data</title>
+</head>
+<body>
+    <h2>Submit Your Details</h2>
+    <form id="contactForm">
+        <input type="text" id="name" placeholder="Your Name" required>
+        <input type="email" id="email" placeholder="Your Email" required>
+        <textarea id="message" placeholder="Your Message" required></textarea>
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        document.getElementById("contactForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            let name = document.getElementById("name").value;
+            let email = document.getElementById("email").value;
+            let message = document.getElementById("message").value;
+
+            let formData = { name, email, message };
+
+            await fetch('https://api.github.com/repos/tejas739/form-data-repo/contents/data.json', {
+                method: 'GET',
+                headers: { 'Accept': 'application/vnd.github.v3+json' }
+            }).then(res => res.json()).then(async file => {
+                let existingData = JSON.parse(atob(file.content));
+                existingData.push(formData);
+                let updatedContent = btoa(JSON.stringify(existingData, null, 2));
+
+                await fetch('https://api.github.com/repos/YOUR_USERNAME/form-data-repo/contents/data.json', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': 'token YOUR_GITHUB_PERSONAL_ACCESS_TOKEN',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: "New form submission",
+                        content: updatedContent,
+                        sha: file.sha
+                    })
+                });
+            });
+
+            alert("Submitted successfully!");
+            document.getElementById("contactForm").reset();
+        });
+    </script>
+</body>
+</html>
