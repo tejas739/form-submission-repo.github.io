@@ -31,7 +31,7 @@
                 existingData.push(formData);
                 let updatedContent = btoa(JSON.stringify(existingData, null, 2));
 
-                await fetch('https://api.github.com/repos/tejas739/form-data-repo.github.io/contents/data.json', {
+                await fetch('https://api.github.com/repos/tejas739/form-data-repo/contents/data.json', {
                     method: 'PUT',
                     headers: {
                         'Authorization': 'token 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',
